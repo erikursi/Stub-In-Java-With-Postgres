@@ -16,5 +16,5 @@ import java.time.LocalDateTime;
 public class LoginResponse {
     private String login;
     private String password;
-    private LocalDateTime timestamp;
+    private String dateTime;
 }
