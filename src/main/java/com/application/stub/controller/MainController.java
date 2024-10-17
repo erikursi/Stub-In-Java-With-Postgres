@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +25,7 @@ public class MainController {
     private ObjectMapper objectMapper;
     private void addRandomDelay() {
         try {
-            int delay = (int) (1000 + Math.random() * 1000);  // Задержка от 1 до 2 секунд
+            int delay = (int) (1000 + Math.random() * 1000);
             Thread.sleep(delay);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -31,33 +33,37 @@ public class MainController {
         }
     }
     @GetMapping("/api/get")
-    public String getCapital() {
+    public ResponseEntity<String> getCapital() {
         addRandomDelay();
         Capital capital = new Capital("Amsterdam", "Netherlands", 921468);
-        String jsonData = null;
+        String jsonData;
         try {
             jsonData = objectMapper.writeValueAsString(capital);
         } catch (JsonProcessingException e) {
             logger.error("Error processing Capital object to JSON", e);
-            return "{\"error\": \"Failed to process capital data\"}";
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"Failed to process capital data\"}");
         }
-        return jsonData;
+        return ResponseEntity.ok(jsonData);
     }
     @PostMapping("/api/post")
-    public String login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         addRandomDelay();
         LocalDateTime currentDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String formattedDateTime = currentDateTime.format(formatter);
         LoginResponse loginResponse = new LoginResponse(loginRequest.getLogin(), loginRequest.getPassword(), formattedDateTime);
-        String jsonData = null;
+        String jsonData;
         try {
             jsonData = objectMapper.writeValueAsString(loginResponse);
         } catch (JsonProcessingException e) {
             logger.error("Error processing LoginResponse object to JSON", e);
-            return "{\"error\": \"Failed to process login response\"}";
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"Failed to process login response\"}");
 
         }
-        return jsonData;
+        return ResponseEntity.ok(jsonData);
     }
 }
