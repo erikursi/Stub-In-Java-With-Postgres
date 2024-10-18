@@ -1,8 +1,4 @@
 package com.application.stub.controller;
-
-import com.application.stub.entity.Capital;
-import com.application.stub.entity.LoginRequest;
-import com.application.stub.entity.LoginResponse;
 import com.application.stub.entity.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,9 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @RestController
@@ -34,19 +27,6 @@ public class MainController {
             Thread.currentThread().interrupt();
         }
     }
-    @GetMapping("/get")
-    public ResponseEntity<String> getCapital() {
-        addRandomDelay();
-        Capital capital = new Capital("Amsterdam", "Netherlands", 921468);
-        try {
-            return ResponseEntity.ok(objectMapper.writeValueAsString(capital));
-        } catch (JsonProcessingException e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"error\": \"Failed to process capital data\"}");
-        }
-
-    }
     @GetMapping("/getUser")
     public ResponseEntity<?> getUser() {
         addRandomDelay();
@@ -59,22 +39,7 @@ public class MainController {
         }
 
     }
-    @PostMapping("/post")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        addRandomDelay();
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        String formattedDateTime = currentDateTime.format(formatter);
-        LoginResponse loginResponse = new LoginResponse(loginRequest.getLogin(), loginRequest.getPassword(), formattedDateTime);
-        try {
-            return ResponseEntity.ok(objectMapper.writeValueAsString(loginResponse));
-        } catch (JsonProcessingException e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"error\": \"Failed to process login response\"}");
 
-        }
-    }
     @PostMapping("/postUser")
     public ResponseEntity<?> postUser(@RequestBody @Valid User user) {
         addRandomDelay();
@@ -88,7 +53,7 @@ public class MainController {
         }
     }
     @PostMapping("/postUser2")
-    public ResponseEntity<String> postUser2(@RequestBody Map<String, Object> userMap) {
+    public ResponseEntity<?> postUser2(@RequestBody Map<String, Object> userMap) {
         if (!userMap.containsKey("login") || !userMap.containsKey("password")) {
             return ResponseEntity.badRequest().body("{\"error\": \"Login and password are required\"}");
         }
