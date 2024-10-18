@@ -3,8 +3,10 @@ package com.application.stub.controller;
 import com.application.stub.entity.Capital;
 import com.application.stub.entity.LoginRequest;
 import com.application.stub.entity.LoginResponse;
+import com.application.stub.entity.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-public class MainController { @Autowired
+public class MainController {
+    private static final User STATIC_USER = new User("Alisa", "XXX0088");
+    @Autowired
     private ObjectMapper objectMapper;
     private void addRandomDelay() {
         try {
@@ -33,15 +38,26 @@ public class MainController { @Autowired
     public ResponseEntity<String> getCapital() {
         addRandomDelay();
         Capital capital = new Capital("Amsterdam", "Netherlands", 921468);
-        String jsonData;
         try {
-            jsonData = objectMapper.writeValueAsString(capital);
+            return ResponseEntity.ok(objectMapper.writeValueAsString(capital));
         } catch (JsonProcessingException e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("{\"error\": \"Failed to process capital data\"}");
         }
-        return ResponseEntity.ok(jsonData);
+
+    }
+    @GetMapping("/getUser")
+    public ResponseEntity<?> getUser() {
+        addRandomDelay();
+        try {
+            return ResponseEntity.ok(objectMapper.writeValueAsString(STATIC_USER));
+        } catch (JsonProcessingException e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"Failed to process capital data\"}");
+        }
+
     }
     @PostMapping("/post")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
@@ -50,15 +66,52 @@ public class MainController { @Autowired
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String formattedDateTime = currentDateTime.format(formatter);
         LoginResponse loginResponse = new LoginResponse(loginRequest.getLogin(), loginRequest.getPassword(), formattedDateTime);
-        String jsonData;
         try {
-            jsonData = objectMapper.writeValueAsString(loginResponse);
+            return ResponseEntity.ok(objectMapper.writeValueAsString(loginResponse));
         } catch (JsonProcessingException e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("{\"error\": \"Failed to process login response\"}");
 
         }
-        return ResponseEntity.ok(jsonData);
+    }
+    @PostMapping("/postUser")
+    public ResponseEntity<?> postUser(@RequestBody @Valid User user) {
+        addRandomDelay();
+        try {
+            return ResponseEntity.ok(objectMapper.writeValueAsString(user));
+        } catch (JsonProcessingException e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"Failed to process login response\"}");
+
+        }
+    }
+    @PostMapping("/postUser2")
+    public ResponseEntity<String> postUser2(@RequestBody Map<String, Object> userMap) {
+        if (!userMap.containsKey("login") || !userMap.containsKey("password")) {
+            return ResponseEntity.badRequest().body("{\"error\": \"Login and password are required\"}");
+        }
+        if (userMap.size() > 2) {
+            return ResponseEntity.badRequest().body("{\"error\": \"Extra field detected\"}");
+        }
+        String login = (String) userMap.get("login");
+        String password = (String) userMap.get("password");
+        if (login == null || password == null) {
+            return ResponseEntity.badRequest().body("{\"error\": \"Login and password cannot be null\"}");
+        }
+        if (login.isEmpty() || password.isEmpty()) {
+            return ResponseEntity.badRequest().body("{\"error\": \"Login and password cannot be empty\"}");
+        }
+        addRandomDelay();
+        User user = new User(login, password);
+        try {
+            return ResponseEntity.ok(objectMapper.writeValueAsString(user));
+        } catch (JsonProcessingException e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"Failed to process user data response\"}");
+        }
+
     }
 }
