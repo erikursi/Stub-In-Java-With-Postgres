@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>com.application</groupId>
 	<artifactId>stub</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>stub</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Stub in Java</description>
 	<url/>
 	<licenses>
 		<license/>
