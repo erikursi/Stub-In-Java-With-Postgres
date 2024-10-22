@@ -1,10 +1,6 @@
 package com.application.stub.controller;
 import com.application.stub.entity.User;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +13,6 @@ import java.util.Map;
 @RequestMapping("/api")
 public class MainController {
     private static final User STATIC_USER = new User("Alisa", "XXX0088");
-    @Autowired
-    private ObjectMapper objectMapper;
     private void addRandomDelay() {
         try {
             int delay = (int) (1000 + Math.random() * 1000);
@@ -30,27 +24,14 @@ public class MainController {
     @GetMapping("/getUser")
     public ResponseEntity<?> getUser() {
         addRandomDelay();
-        try {
-            return ResponseEntity.ok(objectMapper.writeValueAsString(STATIC_USER));
-        } catch (JsonProcessingException e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"error\": \"Failed to process capital data\"}");
-        }
+        return ResponseEntity.ok(STATIC_USER);
 
     }
 
     @PostMapping("/postUser")
     public ResponseEntity<?> postUser(@RequestBody @Valid User user) {
         addRandomDelay();
-        try {
-            return ResponseEntity.ok(objectMapper.writeValueAsString(user));
-        } catch (JsonProcessingException e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"error\": \"Failed to process login response\"}");
-
-        }
+        return ResponseEntity.ok(user);
     }
     @PostMapping("/postUser2")
     public ResponseEntity<?> postUser2(@RequestBody Map<String, Object> userMap) {
@@ -70,13 +51,6 @@ public class MainController {
         }
         addRandomDelay();
         User user = new User(login, password);
-        try {
-            return ResponseEntity.ok(objectMapper.writeValueAsString(user));
-        } catch (JsonProcessingException e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"error\": \"Failed to process user data response\"}");
-        }
-
+        return ResponseEntity.ok(user);
     }
 }
