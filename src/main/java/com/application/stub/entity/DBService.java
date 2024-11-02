@@ -1,4 +1,5 @@
 package com.application.stub.entity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -10,10 +11,12 @@ import java.sql.Statement;
 
 @Service
 public class DBService {
-     private static final String URL = "jdbc:postgresql://localhost:5433/my_db";
-//    private static final String URL = "jdbc:postgresql://postgres:5433/my_db";
-    private static final String USER = "admin";
-    private static final String PASSWORD = "admin";
+    @Value("${dbservice.db.url}")
+     private String url;
+    @Value("${dbservice.db.username}")
+    private String username;
+    @Value("${dbservice.db.password}")
+    private  String password;
     public User getUserByLogin(String login) throws SQLException {
         Connection connection = null;
         Statement statement = null;
@@ -23,7 +26,7 @@ public class DBService {
                 "ON u.login = u_e.login " +
                 "WHERE u.login = '" + login + "'";
         try {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            connection = DriverManager.getConnection(url, username, password);
             statement = connection.createStatement();
             resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
@@ -50,7 +53,7 @@ public class DBService {
     public int addUser(User user) throws SQLException {
         int rowsInserted = 0;
         String query = "INSERT INTO users (login, password, date) VALUES (?, ?, ?);\nINSERT INTO user_emails (login, email) VALUES (?, ?)";
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = DriverManager.getConnection(url, username, password); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, user.getLogin());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.setDate(3, user.getDate());

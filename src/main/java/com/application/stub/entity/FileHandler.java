@@ -1,5 +1,6 @@
 package com.application.stub.entity;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -12,10 +13,11 @@ import java.util.Scanner;
 
 @Service
 public class FileHandler {
-    private static final String FILE_PATH = "src/main/resources/users.txt";
+    @Value("${filehandler.filepath}")
+    private String filePath;
     public String readUserFromFile() throws IOException {
         List<String> lines = new ArrayList<>();
-        try (Scanner scanner = new Scanner(new File(FILE_PATH))) {
+        try (Scanner scanner = new Scanner(new File(filePath))) {
             while (scanner.hasNextLine()) {
                 lines.add(scanner.nextLine());
             }
@@ -28,7 +30,7 @@ public class FileHandler {
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
         }
-        try (FileWriter writer = new FileWriter(FILE_PATH, true)) {
+        try (FileWriter writer = new FileWriter(filePath, true)) {
             writer.write(user.toJson() + System.lineSeparator());
         }
     }

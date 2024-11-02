@@ -5,3 +5,6 @@
 {"login":"user7","password":"password7","email":"user7@example.com","date":"2024-11-01"}
 {"login":"user1","password":"password1","email":"user1@example.com","date":"2024-11-01"}
 {"login":"user77","password":"password77","email":"user77@example.com","date":"2024-11-01"}
+{"login":"user77","password":"password77","email":"user77@example.com","date":"2024-11-01"}
+{"login":"adam","password":"yo","email":"adam@example.com","date":"2024-11-02"}
+{"login":"eva","password":"jo","email":"eva@example.com","date":"2024-11-02"}
