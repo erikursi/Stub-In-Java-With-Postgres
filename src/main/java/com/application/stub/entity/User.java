@@ -1,12 +1,13 @@
 package com.application.stub.entity;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.NoArgsConstructor;
+// import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 
-@NoArgsConstructor
+// @NoArgsConstructor
 public class User {
     @NotNull(message = "Login cannot be null")
     @NotEmpty(message = "Login cannot be empty")
@@ -26,6 +27,7 @@ private String password;
         this.email = email;
         this.date = date;
     }
+    @JsonCreator
     public User (String login, String password, String email) {
         this.login = login;
         this.password = password;
