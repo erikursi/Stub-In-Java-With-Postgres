@@ -3,11 +3,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-// import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 
-// @NoArgsConstructor
 public class User {
     @NotNull(message = "Login cannot be null")
     @NotEmpty(message = "Login cannot be empty")
@@ -75,5 +73,13 @@ private String password;
                 ", date=" + date +
                 ", email='" + email + '\'' +
                 '}';
+    }
+    public String toJson() {
+        return "{" +
+                "\"login\":" + "\"" + login + "\"" +
+                ",\"password\":" + "\"" + password + "\"" +
+                ",\"email\":" + "\"" + email + "\"" +
+                ",\"date\":" + "\"" + date + "\"" +
+                "}";
     }
 }

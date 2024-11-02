@@ -1,5 +1,6 @@
 package com.application.stub.controller;
 import com.application.stub.entity.DBService;
+import com.application.stub.entity.FileHandler;
 import com.application.stub.entity.User;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -20,6 +23,8 @@ import java.util.Map;
 public class MainController {
     @Autowired
     private DBService dbService;
+    @Autowired
+    private FileHandler fileHandler;
     private void addRandomDelay() {
         try {
             int delay = (int) (1000 + Math.random() * 1000);
@@ -28,14 +33,26 @@ public class MainController {
             Thread.currentThread().interrupt();
         }
     }
+    @GetMapping("/getRandomUser")
+    public ResponseEntity<?> getRandomUser() {
+        addRandomDelay();
+        try {
+            return ResponseEntity.ok(fileHandler.readUserFromFile());
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"" + e.getMessage() + "\"}");
+        }
+
+    }
+
     @GetMapping("/getUser/{login}")
     public ResponseEntity<?> getUserbyLogin(@PathVariable String login) {
         addRandomDelay();
         try {
             User user = dbService.getUserByLogin(login);
+            fileHandler.writeUserToFile(user);
             return ResponseEntity.ok(user);
-        } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"Database error\"}");
+        } catch (SQLException | IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"" + e.getMessage() + "\"}");
         }
 
     }
@@ -47,7 +64,7 @@ public class MainController {
             dbService.addUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully");
         } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"Database error\"}");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"" + e.getMessage() + "\"}");
         }
     }
 
@@ -68,7 +85,8 @@ public class MainController {
             dbService.addUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully");
         } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"Database error\"}");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"" + e.getMessage() + "\"}");
         }
+
     }
 }

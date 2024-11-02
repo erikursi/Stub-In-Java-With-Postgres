@@ -1,0 +1,7 @@
+{"login":"u1","password":"p1","email":"u1@example.com"}
+{"login":"u2","password":"p2","email":"u2@example.com"}
+{"login":"u3","password":"p3","email":"u3@example.com"}
+{"login":"u4","password":"p4","email":"u4@example.com"}
+{"login":"user7","password":"password7","email":"user7@example.com","date":"2024-11-01"}
+{"login":"user1","password":"password1","email":"user1@example.com","date":"2024-11-01"}
+{"login":"user77","password":"password77","email":"user77@example.com","date":"2024-11-01"}

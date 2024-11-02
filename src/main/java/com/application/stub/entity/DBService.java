@@ -10,8 +10,8 @@ import java.sql.Statement;
 
 @Service
 public class DBService {
-    // private static final String URL = "jdbc:postgresql://localhost:5433/my_db";
-    private static final String URL = "jdbc:postgresql://postgres:5433/my_db";
+     private static final String URL = "jdbc:postgresql://localhost:5433/my_db";
+//    private static final String URL = "jdbc:postgresql://postgres:5433/my_db";
     private static final String USER = "admin";
     private static final String PASSWORD = "admin";
     public User getUserByLogin(String login) throws SQLException {
