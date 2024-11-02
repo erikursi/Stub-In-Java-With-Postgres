@@ -8,6 +8,7 @@ RUN mvn clean package -DskipTests
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 COPY --from=build /app/target/stub-1.0.0.jar /app/app.jar
+COPY src/main/resources/users.txt /app/users.txt
 
 EXPOSE 8081
 
